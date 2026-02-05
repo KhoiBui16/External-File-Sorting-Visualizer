@@ -1,0 +1,1638 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>Minh Họa Sắp Xếp Ngoại</title>
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com" rel="preconnect" />
+		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<!-- Material Symbols -->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<!-- Tailwind CSS -->
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<script>
+			tailwind.config = {
+				darkMode: "class",
+				theme: {
+					extend: {
+						colors: {
+							primary: "#137fec",
+							"background-light": "#f6f7f8",
+							"background-dark": "#101922",
+							"surface-dark": "#1c232d",
+							"surface-light": "#ffffff",
+						},
+						fontFamily: {
+							display: ["Inter", "sans-serif"],
+							mono: ["Roboto Mono", "monospace"],
+						},
+						borderRadius: {
+							DEFAULT: "0.25rem",
+							lg: "0.5rem",
+							xl: "0.75rem",
+							full: "9999px",
+						},
+					},
+				},
+			};
+		</script>
+		<style>
+			/* Custom scrollbar - Light theme */
+			.custom-scrollbar::-webkit-scrollbar {
+				height: 8px;
+				width: 8px;
+			}
+			.custom-scrollbar::-webkit-scrollbar-track {
+				background: #e2e8f0;
+				border-radius: 4px;
+			}
+			.custom-scrollbar::-webkit-scrollbar-thumb {
+				background: #94a3b8;
+				border-radius: 4px;
+			}
+			.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+				background: #64748b;
+			}
+
+			/* Enhanced animations */
+			@keyframes pulse-highlight {
+				0%,
+				100% {
+					box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4);
+				}
+				50% {
+					box-shadow: 0 0 0 8px rgba(250, 204, 21, 0);
+				}
+			}
+			.pulse-highlight {
+				animation: pulse-highlight 1s infinite;
+			}
+
+			@keyframes slide-in {
+				from {
+					transform: translateX(-10px);
+					opacity: 0;
+				}
+				to {
+					transform: translateX(0);
+					opacity: 1;
+				}
+			}
+			.animate-slide-in {
+				animation: slide-in 0.3s ease-out;
+			}
+
+			/* Bar chart styling */
+			.bar-item {
+				transition: all 0.3s ease;
+				border-radius: 4px 4px 0 0;
+			}
+			.bar-item:hover {
+				filter: brightness(1.1);
+			}
+
+			/* Gradient backgrounds */
+			.gradient-primary {
+				background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+			}
+			.gradient-success {
+				background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+			}
+			.gradient-warning {
+				background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+			}
+
+			.hidden-view {
+				display: none !important;
+			}
+			.active-view {
+				display: flex !important;
+			}
+
+			@keyframes fade-in {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			.animate-fade-in {
+				animation: fade-in 0.5s ease-out forwards;
+			}
+		</style>
+	</head>
+	<body
+		class="bg-slate-100 text-slate-900 font-display antialiased overflow-hidden h-screen w-full flex flex-col"
+	>
+		<!-- GLOBAL NAVIGATION BAR -->
+		<nav
+			id="globalNav"
+			class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 px-4 py-2 flex items-center justify-between shrink-0 z-50"
+		>
+			<div class="flex items-center gap-3">
+				<div
+					class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg"
+				>
+					<span class="material-symbols-outlined text-white text-lg">sort</span>
+				</div>
+				<span class="text-white font-bold text-sm hidden sm:block"
+					>External Sort Visualization</span
+				>
+			</div>
+
+			<!-- Navigation Tabs -->
+			<div class="flex items-center gap-1 bg-slate-700/50 rounded-xl p-1">
+				<button
+					id="navTab1"
+					class="nav-tab flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-blue-600 shadow-md"
+					data-view="config"
+				>
+					<span class="material-symbols-outlined text-sm">settings</span>
+					<span class="hidden sm:inline">Cấu hình</span>
+					<span class="sm:hidden">1</span>
+				</button>
+				<button
+					id="navTab2"
+					class="nav-tab flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-600"
+					data-view="viz"
+					disabled
+				>
+					<span class="material-symbols-outlined text-sm">play_circle</span>
+					<span class="hidden sm:inline">Minh họa</span>
+					<span class="sm:hidden">2</span>
+				</button>
+				<button
+					id="navTab3"
+					class="nav-tab flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white hover:bg-slate-600"
+					data-view="result"
+					disabled
+				>
+					<span class="material-symbols-outlined text-sm">check_circle</span>
+					<span class="hidden sm:inline">Kết quả</span>
+					<span class="sm:hidden">3</span>
+				</button>
+			</div>
+
+			<!-- Status Indicator -->
+			<div id="navStatus" class="flex items-center gap-2">
+				<span id="navStatusText" class="text-xs text-slate-400 hidden sm:block"
+					>Chưa bắt đầu</span
+				>
+				<div id="navStatusDot" class="w-2 h-2 rounded-full bg-slate-500"></div>
+			</div>
+		</nav>
+
+		<!-- VIEW 1: CONFIGURATION -->
+		<div
+			id="view-config"
+			class="active-view w-full flex-1 flex flex-col md:flex-row overflow-hidden"
+		>
+			<!-- Sidebar Config -->
+			<aside
+				class="w-full md:w-96 bg-white border-r-2 border-slate-200 flex flex-col flex-none z-20 shadow-2xl shadow-slate-500/10 h-full overflow-y-auto custom-scrollbar"
+			>
+				<!-- Header -->
+				<div
+					class="px-6 py-5 border-b border-slate-200 flex items-center gap-3 sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 z-10"
+				>
+					<div
+						class="size-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-lg"
+					>
+						<span class="material-symbols-outlined text-3xl">sort</span>
+					</div>
+					<div>
+						<h1 class="text-lg font-black leading-tight text-white">
+							Sắp Xếp Ngoại
+						</h1>
+						<p class="text-xs text-blue-100 font-medium">
+							External Sort Visualization
+						</p>
+					</div>
+				</div>
+
+				<!-- Mô tả chi tiết -->
+				<div
+					class="px-6 py-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50"
+				>
+					<h2
+						class="text-sm font-bold text-blue-700 mb-2 flex items-center gap-2"
+					>
+						<span
+							class="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center"
+						>
+							<span class="material-symbols-outlined text-white text-sm"
+								>info</span
+							>
+						</span>
+						External Sort là gì?
+					</h2>
+					<p class="text-xs text-slate-600 leading-relaxed mb-3">
+						<strong class="text-blue-600">External Sort</strong> (Sắp xếp ngoại)
+						là thuật toán sắp xếp dữ liệu
+						<em class="text-purple-600">lớn hơn bộ nhớ RAM</em>. Dữ liệu được
+						chia thành các <strong class="text-emerald-600">Run</strong> nhỏ,
+						sắp xếp trong RAM, rồi gộp lại bằng
+						<strong class="text-orange-600">K-Way Merge</strong>.
+					</p>
+					<div class="flex flex-wrap gap-2">
+						<span
+							class="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 border border-blue-200 text-blue-700 rounded-lg text-[10px] font-bold shadow-sm"
+						>
+							<span class="material-symbols-outlined text-xs">looks_one</span>
+							Phase 1: Tạo Run
+						</span>
+						<span
+							class="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-200 text-orange-700 rounded-lg text-[10px] font-bold shadow-sm"
+						>
+							<span class="material-symbols-outlined text-xs">looks_two</span>
+							Phase 2: K-Way Merge
+						</span>
+					</div>
+				</div>
+
+				<!-- Accordion: Cách hoạt động -->
+				<details class="group border-b border-slate-200">
+					<summary
+						class="px-6 py-3 cursor-pointer flex items-center justify-between hover:bg-slate-50 transition-colors"
+					>
+						<span
+							class="flex items-center gap-2 text-sm font-medium text-slate-700"
+						>
+							<span class="material-symbols-outlined text-base text-blue-500"
+								>help_outline</span
+							>
+							Cách External Sort Hoạt Động
+						</span>
+						<span
+							class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform"
+							>expand_more</span
+						>
+					</summary>
+					<div class="px-6 pb-4 text-xs text-slate-600 space-y-3">
+						<div
+							class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border-l-4 border-blue-500 shadow-sm"
+						>
+							<p class="font-bold text-blue-700 mb-2 flex items-center gap-1">
+								<span class="text-lg">🔹</span> Phase 1: Tạo Run (Run
+								Generation)
+							</p>
+							<ol class="list-decimal list-inside space-y-1.5 text-slate-600">
+								<li>
+									Đọc <strong class="text-blue-600">M phần tử</strong> từ file
+									vào RAM
+								</li>
+								<li>Sắp xếp M phần tử đó (dùng Insertion Sort)</li>
+								<li>
+									Ghi ra đĩa thành 1
+									<strong class="text-emerald-600">Run</strong>
+								</li>
+								<li>Lặp lại cho đến hết file → Tạo được nhiều Run</li>
+							</ol>
+						</div>
+						<div
+							class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 border-l-4 border-orange-500 shadow-sm"
+						>
+							<p class="font-bold text-orange-700 mb-2 flex items-center gap-1">
+								<span class="text-lg">🔹</span> Phase 2: K-Way Merge
+							</p>
+							<ol class="list-decimal list-inside space-y-1.5 text-slate-600">
+								<li>
+									Lấy <strong class="text-orange-600">K Run</strong> đầu tiên
+								</li>
+								<li>
+									So sánh phần tử đầu mỗi Run bằng
+									<strong class="text-cyan-600">Min-Heap</strong>
+								</li>
+								<li>Chọn phần tử nhỏ nhất → Ghi ra Output</li>
+								<li>Lặp lại cho đến khi tất cả Run rỗng</li>
+								<li>
+									Tiếp tục merge cho đến khi chỉ còn
+									<strong class="text-emerald-600">1 Run duy nhất</strong>
+								</li>
+							</ol>
+						</div>
+						<div
+							class="bg-gradient-to-r from-purple-50 to-fuchsia-50 rounded-xl p-4 border border-purple-200 shadow-sm"
+						>
+							<p class="font-bold text-purple-700 mb-2 flex items-center gap-1">
+								<span class="text-lg">📊</span> Độ phức tạp thuật toán:
+							</p>
+							<ul class="list-disc list-inside space-y-1.5">
+								<li>
+									<strong class="text-blue-600">Thời gian:</strong> O(N log N) -
+									với N là số phần tử
+								</li>
+								<li>
+									<strong class="text-emerald-600">Không gian:</strong> O(M) -
+									chỉ cần M phần tử trong RAM
+								</li>
+								<li>
+									<strong class="text-amber-600">I/O:</strong> O(N/B ×
+									log<sub>K</sub>(N/M)) - B là block size
+								</li>
+							</ul>
+						</div>
+					</div>
+				</details>
+
+				<!-- Accordion: Ví dụ & Edge Cases -->
+				<details class="group border-b border-slate-200">
+					<summary
+						class="px-6 py-3 cursor-pointer flex items-center justify-between hover:bg-slate-50 transition-colors"
+					>
+						<span
+							class="flex items-center gap-2 text-sm font-medium text-slate-700"
+						>
+							<span class="material-symbols-outlined text-base text-amber-500"
+								>lightbulb</span
+							>
+							Ví Dụ & Trường Hợp Đặc Biệt
+						</span>
+						<span
+							class="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform"
+							>expand_more</span
+						>
+					</summary>
+					<div class="px-6 pb-4 text-xs text-slate-600 space-y-3">
+						<div
+							class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-4 border-l-4 border-emerald-500 shadow-sm"
+						>
+							<p
+								class="font-bold text-emerald-700 mb-2 flex items-center gap-1"
+							>
+								<span class="text-lg">📝</span> Ví dụ minh họa:
+							</p>
+							<p class="mb-2">
+								Cho dữ liệu:
+								<code
+									class="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-bold text-slate-700"
+									>[8, 3, 7, 1, 5, 9, 2, 6, 4]</code
+								>
+							</p>
+							<p class="mb-1">
+								Với <strong class="text-blue-600">M = 3</strong> và
+								<strong class="text-orange-600">K = 2</strong>:
+							</p>
+							<ul class="list-disc list-inside space-y-1 ml-2">
+								<li>
+									Run 1: [8,3,7] → sắp xếp →
+									<strong class="text-emerald-600">[3,7,8]</strong>
+								</li>
+								<li>
+									Run 2: [1,5,9] → sắp xếp →
+									<strong class="text-emerald-600">[1,5,9]</strong>
+								</li>
+								<li>
+									Run 3: [2,6,4] → sắp xếp →
+									<strong class="text-emerald-600">[2,4,6]</strong>
+								</li>
+								<li>
+									Merge Run 1 & 2 →
+									<strong class="text-purple-600">[1,3,5,7,8,9]</strong>
+								</li>
+								<li>
+									Merge với Run 3 →
+									<strong class="text-emerald-600">[1,2,3,4,5,6,7,8,9]</strong>
+									✅
+								</li>
+							</ul>
+						</div>
+						<div
+							class="bg-gradient-to-r from-purple-50 to-fuchsia-50 rounded-xl p-4 border-l-4 border-purple-500 shadow-sm"
+						>
+							<p class="font-bold text-purple-700 mb-2 flex items-center gap-1">
+								<span class="text-lg">⚠️</span> Trường hợp đặc biệt:
+							</p>
+							<ul class="list-disc list-inside space-y-1.5">
+								<li>
+									<strong class="text-blue-600">Dữ liệu đã sắp xếp:</strong> Vẫn
+									tạo Run nhưng merge nhanh hơn
+								</li>
+								<li>
+									<strong class="text-red-600">Dữ liệu giảm dần:</strong> Worst
+									case cho Insertion Sort
+								</li>
+								<li>
+									<strong class="text-emerald-600">Số phần tử < M:</strong> Chỉ
+									cần 1 Run, không cần merge
+								</li>
+								<li>
+									<strong class="text-amber-600"
+										>Tất cả phần tử giống nhau:</strong
+									>
+									Ổn định, giữ thứ tự
+								</li>
+							</ul>
+						</div>
+						<div
+							class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-4 border-l-4 border-yellow-500 shadow-sm"
+						>
+							<p class="font-bold text-amber-700 mb-2 flex items-center gap-1">
+								<span class="text-lg">💡</span> Mẹo sử dụng:
+							</p>
+							<ul class="list-disc list-inside space-y-1.5">
+								<li>
+									<strong class="text-blue-600">M càng lớn</strong> → Ít Run hơn
+									→ Merge nhanh hơn
+								</li>
+								<li>
+									<strong class="text-orange-600">K càng lớn</strong> → Merge
+									nhiều Run cùng lúc → Ít pass hơn
+								</li>
+								<li>
+									<strong class="text-emerald-600"
+										>Dữ liệu nhỏ (< 50 phần tử):</strong
+									>
+									Dễ quan sát từng bước
+								</li>
+							</ul>
+						</div>
+					</div>
+				</details>
+
+				<!-- Form -->
+				<div class="flex-1 p-6 space-y-8">
+					<!-- File Upload -->
+					<div class="space-y-3">
+						<div class="flex items-center justify-between">
+							<label
+								class="text-sm font-bold text-slate-700 flex items-center gap-1"
+								><span class="material-symbols-outlined text-blue-500 text-lg"
+									>upload_file</span
+								>
+								Tệp Nguồn</label
+							>
+							<span
+								class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full"
+								>.BIN</span
+							>
+						</div>
+						<div
+							id="dropZone"
+							class="group relative flex flex-col items-center justify-center w-full h-44 rounded-2xl border-2 border-dashed border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-400 transition-all cursor-pointer shadow-inner"
+						>
+							<div class="flex flex-col items-center justify-center pt-5 pb-6">
+								<div
+									class="size-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200 shadow-xl shadow-blue-500/30"
+								>
+									<span class="material-symbols-outlined text-white text-2xl"
+										>cloud_upload</span
+									>
+								</div>
+								<p class="mb-1 text-sm text-slate-600 text-center px-4">
+									<span class="font-bold text-blue-600">Nhấn để tải lên</span>
+									hoặc kéo thả
+								</p>
+								<p id="fileNameDisplay" class="text-xs text-slate-500">
+									File nhị phân (8-byte doubles)
+								</p>
+							</div>
+							<input class="hidden" id="fileInput" type="file" accept=".bin" />
+						</div>
+						<!-- Generator Quick Actions -->
+						<div class="grid grid-cols-2 gap-2 mt-2">
+							<button
+								id="btnGenSmall"
+								class="px-3 py-2.5 text-xs font-bold bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 border border-slate-300 rounded-xl text-slate-700 transition-all shadow-sm"
+							>
+								🎲 Tạo Random (20)
+							</button>
+							<button
+								id="btnGenLarge"
+								class="px-3 py-2.5 text-xs font-bold bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 border border-slate-300 rounded-xl text-slate-700 transition-all shadow-sm"
+							>
+								🎲 Tạo Random (100)
+							</button>
+						</div>
+					</div>
+
+					<!-- RAM Limit -->
+					<div
+						class="space-y-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4"
+					>
+						<div class="flex justify-between items-end">
+							<label
+								class="text-sm font-bold text-blue-700 flex items-center gap-1"
+								><span class="material-symbols-outlined text-lg">memory</span>
+								Giới hạn RAM (M)</label
+							>
+							<div class="text-right">
+								<span
+									id="ramDisplay"
+									class="text-xl font-black text-blue-600 tabular-nums bg-white px-2 py-0.5 rounded-lg border border-blue-200"
+									>4</span
+								>
+								<span class="text-xs text-blue-500 ml-1">phần tử</span>
+							</div>
+						</div>
+						<div class="relative w-full h-6 flex items-center group">
+							<input
+								id="ramInput"
+								class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+								max="20"
+								min="2"
+								type="range"
+								value="4"
+							/>
+						</div>
+						<p class="text-xs text-blue-600 leading-relaxed">
+							💡 Số lượng phần tử tối đa có thể chứa trong bộ nhớ chính cùng
+							lúc.
+						</p>
+					</div>
+
+					<!-- K-Way Merge -->
+					<div
+						class="space-y-4 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-4"
+					>
+						<div class="flex justify-between items-end">
+							<label
+								class="text-sm font-bold text-orange-700 flex items-center gap-1"
+								><span class="material-symbols-outlined text-lg">merge</span> Số
+								luồng Merge (K)</label
+							>
+							<div class="text-right">
+								<span
+									id="kDisplay"
+									class="text-xl font-black text-orange-600 tabular-nums bg-white px-2 py-0.5 rounded-lg border border-orange-200"
+									>2</span
+								>
+								<span class="text-xs text-orange-500 ml-1">run</span>
+							</div>
+						</div>
+						<div class="relative w-full h-6 flex items-center group">
+							<input
+								id="kInput"
+								class="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+								max="5"
+								min="2"
+								type="range"
+								value="2"
+							/>
+						</div>
+					</div>
+
+					<!-- Divider -->
+					<hr class="border-slate-200" />
+
+					<!-- Stats Summary -->
+					<div
+						class="rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50 border-2 border-slate-200 p-5 shadow-sm"
+					>
+						<div class="flex items-center gap-2 mb-3">
+							<span
+								class="w-6 h-6 bg-gradient-to-br from-slate-500 to-slate-600 rounded-lg flex items-center justify-center"
+							>
+								<span class="material-symbols-outlined text-white text-sm"
+									>calculate</span
+								>
+							</span>
+							<h3
+								class="text-xs font-bold uppercase tracking-wider text-slate-600"
+							>
+								Ước Tính Hiệu Suất
+							</h3>
+						</div>
+						<div class="grid grid-cols-2 gap-4">
+							<div class="bg-white rounded-xl p-3 border border-slate-200">
+								<p class="text-[10px] text-slate-500 uppercase font-bold">
+									Số Run (Chunk)
+								</p>
+								<p id="estChunks" class="text-lg font-black text-slate-700">
+									-
+								</p>
+							</div>
+							<div class="bg-white rounded-xl p-3 border border-slate-200">
+								<p class="text-[10px] text-slate-500 uppercase font-bold">
+									Số Pass
+								</p>
+								<p id="estPasses" class="text-lg font-black text-slate-700">
+									-
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Start Action -->
+				<div
+					class="p-6 border-t border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 sticky bottom-0"
+				>
+					<button
+						id="btnStartSimulation"
+						class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xl shadow-blue-500/30 font-bold py-4 px-6 rounded-2xl transition-all active:scale-[0.98]"
+					>
+						<span class="material-symbols-outlined text-xl">play_arrow</span>
+						<span class="text-lg">Chạy Mô Phỏng</span>
+					</button>
+				</div>
+			</aside>
+
+			<!-- Main Content: Preview -->
+			<main
+				class="flex-1 flex flex-col min-w-0 bg-gradient-to-br from-slate-50 to-blue-50 relative"
+			>
+				<div
+					class="flex flex-col items-center justify-center h-full text-slate-500"
+				>
+					<div
+						class="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-4 shadow-lg"
+					>
+						<span class="material-symbols-outlined text-4xl text-blue-500"
+							>data_object</span
+						>
+					</div>
+					<p class="text-lg font-medium">
+						Vui lòng chọn hoặc tạo dữ liệu để xem trước
+					</p>
+					<p class="text-sm text-slate-400 mt-1">
+						Tải file .bin hoặc dùng nút "Tạo Random"
+					</p>
+					<div
+						id="previewContainer"
+						class="hidden w-full h-full p-8 overflow-auto"
+					>
+						<!-- Preview content will be injected here -->
+						<table
+							class="w-full text-left border-collapse bg-white rounded-xl shadow-lg overflow-hidden"
+						>
+							<!-- Table header -->
+							<thead>
+								<tr
+									class="text-xs font-bold text-slate-600 border-b-2 border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50"
+								>
+									<th class="py-3 px-6 w-24 font-mono">Index</th>
+									<th class="py-3 px-6 text-right">Giá trị</th>
+								</tr>
+							</thead>
+							<tbody
+								id="previewBody"
+								class="divide-y divide-slate-100 text-sm"
+							></tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<!-- VIEW 2: VISUALIZATION - Redesigned like VisualizedDSA -->
+		<div id="view-viz" class="hidden-view w-full flex-1 flex overflow-hidden">
+			<!-- LEFT SIDEBAR: Controls + Legend -->
+			<aside
+				class="w-80 bg-white border-r-2 border-slate-200 flex flex-col h-full overflow-y-auto custom-scrollbar shrink-0 shadow-xl shadow-slate-500/10"
+			>
+				<!-- Header -->
+				<div
+					class="p-4 border-b border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600"
+				>
+					<button
+						id="btnBackToConfig"
+						class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors mb-3"
+					>
+						<span class="material-symbols-outlined text-lg">arrow_back</span>
+						Quay lại Cấu hình
+					</button>
+					<h1 class="text-xl font-black text-white">External Sort</h1>
+					<p id="vizPhaseTitle" class="text-sm text-blue-100">
+						Giai đoạn 1: Tạo Run
+					</p>
+				</div>
+
+				<!-- Playback Controls -->
+				<div class="p-4 border-b border-slate-200">
+					<div class="flex items-center gap-2 mb-4">
+						<button
+							id="btnPlay"
+							class="flex items-center justify-center gap-1 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg hover:from-emerald-600 hover:to-green-600 font-bold text-sm shadow-lg shadow-emerald-500/30 transition-all"
+						>
+							<span class="material-symbols-outlined text-lg">play_arrow</span>
+							Play
+						</button>
+						<button
+							id="btnPause"
+							class="hidden flex items-center justify-center gap-1 px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-lg hover:from-yellow-500 hover:to-orange-500 font-bold text-sm shadow-lg shadow-yellow-500/30 transition-all"
+						>
+							<span class="material-symbols-outlined text-lg">pause</span>
+							Pause
+						</button>
+						<button
+							id="btnStep"
+							class="flex items-center justify-center gap-1 px-3 py-2 bg-white border-2 border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 hover:border-blue-400 font-bold text-sm transition-all"
+						>
+							<span class="material-symbols-outlined text-lg">skip_next</span>
+							Step
+						</button>
+						<button
+							id="btnReset"
+							class="flex items-center justify-center gap-1 px-3 py-2 bg-white border-2 border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 hover:border-slate-400 font-bold text-sm transition-all"
+						>
+							<span class="material-symbols-outlined text-lg">restart_alt</span>
+							Reset
+						</button>
+					</div>
+
+					<!-- Speed Control -->
+					<div
+						class="space-y-2 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-3 border border-purple-200"
+					>
+						<div class="flex justify-between items-center">
+							<label
+								class="text-xs font-bold uppercase text-purple-600 flex items-center gap-1"
+							>
+								<span class="material-symbols-outlined text-sm">speed</span>
+								Tốc độ
+							</label>
+							<span
+								id="speedPercent"
+								class="text-xs bg-purple-500 text-white px-2 py-0.5 rounded-full font-bold"
+								>90%</span
+							>
+						</div>
+						<input
+							id="speedSlider"
+							type="range"
+							min="100"
+							max="2000"
+							value="1800"
+							class="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
+						/>
+					</div>
+				</div>
+
+				<!-- Statistics -->
+				<div class="p-4 border-b border-slate-200">
+					<h3
+						class="text-xs font-bold uppercase text-slate-600 mb-3 flex items-center gap-1"
+					>
+						<span class="material-symbols-outlined text-sm text-blue-500"
+							>analytics</span
+						>
+						Thống Kê Realtime
+					</h3>
+					<div class="grid grid-cols-2 gap-2 text-sm">
+						<div
+							class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3"
+						>
+							<p class="text-[10px] text-blue-600 font-bold">BƯỚC</p>
+							<p id="lblStepCount" class="text-xl font-black text-blue-700">
+								0
+							</p>
+						</div>
+						<div
+							class="bg-gradient-to-br from-amber-50 to-yellow-50 border border-yellow-200 rounded-xl p-3"
+						>
+							<p class="text-[10px] text-amber-600 font-bold">SO SÁNH</p>
+							<p id="statCompares" class="text-xl font-black text-amber-600">
+								0
+							</p>
+						</div>
+						<div
+							class="bg-gradient-to-br from-cyan-50 to-sky-50 border border-cyan-200 rounded-xl p-3"
+						>
+							<p class="text-[10px] text-cyan-600 font-bold">ĐỌC ĐĨA</p>
+							<p id="statReads" class="text-xl font-black text-cyan-600">0</p>
+						</div>
+						<div
+							class="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-3"
+						>
+							<p class="text-[10px] text-emerald-600 font-bold">GHI ĐĨA</p>
+							<p id="statWrites" class="text-xl font-black text-emerald-600">
+								0
+							</p>
+						</div>
+					</div>
+					<div
+						class="mt-2 bg-gradient-to-br from-purple-50 to-fuchsia-50 border border-purple-200 rounded-xl p-3"
+					>
+						<p class="text-[10px] text-purple-600 font-bold">RUNS ĐÃ TẠO</p>
+						<p id="statRuns" class="text-xl font-black text-purple-600">0</p>
+					</div>
+				</div>
+
+				<!-- Legend -->
+				<div class="p-4 border-b border-slate-200">
+					<h3
+						class="text-xs font-bold uppercase text-slate-600 mb-3 flex items-center gap-1"
+					>
+						<span class="material-symbols-outlined text-sm text-amber-500"
+							>palette</span
+						>
+						Chú Thích Màu Sắc
+					</h3>
+					<div class="space-y-3 text-sm">
+						<div class="flex items-center gap-3">
+							<div
+								class="w-5 h-5 bg-gradient-to-br from-yellow-300 to-amber-400 rounded-md shadow-md border border-yellow-400"
+							></div>
+							<div>
+								<p class="font-bold text-slate-700">Đang so sánh</p>
+								<p class="text-[10px] text-slate-500">
+									Các phần tử đang được so sánh
+								</p>
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div
+								class="w-5 h-5 bg-gradient-to-br from-red-400 to-rose-500 rounded-md shadow-md border border-red-400"
+							></div>
+							<div>
+								<p class="font-bold text-slate-700">Dịch chuyển</p>
+								<p class="text-[10px] text-slate-500">
+									Phần tử đang được di chuyển
+								</p>
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div
+								class="w-5 h-5 bg-gradient-to-br from-emerald-400 to-green-500 rounded-md shadow-md border border-emerald-400"
+							></div>
+							<div>
+								<p class="font-bold text-slate-700">Đã sắp xếp</p>
+								<p class="text-[10px] text-slate-500">
+									Phần tử đã ở vị trí cuối
+								</p>
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div
+								class="w-5 h-5 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-md shadow-md"
+							></div>
+							<div>
+								<p class="font-bold text-slate-700">Chưa xử lý</p>
+								<p class="text-[10px] text-slate-500">
+									Phần tử chưa được xử lý
+								</p>
+							</div>
+						</div>
+					</div>
+					<div
+						class="mt-3 p-3 bg-gradient-to-r from-slate-50 to-blue-50 border border-slate-200 rounded-xl text-xs text-slate-600"
+					>
+						<p class="font-bold mb-1 flex items-center gap-1 text-blue-700">
+							<span class="material-symbols-outlined text-sm">visibility</span>
+							Cách đọc visualization:
+						</p>
+						<ul class="space-y-1 list-disc list-inside">
+							<li><strong>Số</strong> hiện giá trị phần tử</li>
+							<li><strong>Chiều cao</strong> tương ứng với giá trị</li>
+							<li><strong>Màu sắc</strong> cho biết trạng thái</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- Config Info -->
+				<div class="p-4">
+					<h3
+						class="text-xs font-bold uppercase text-slate-600 mb-2 flex items-center gap-1"
+					>
+						<span class="material-symbols-outlined text-sm text-purple-500"
+							>settings</span
+						>
+						Cấu Hình Hiện Tại
+					</h3>
+					<div
+						class="text-sm text-slate-700 space-y-2 bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-3"
+					>
+						<p class="flex items-center justify-between">
+							<span>RAM (M):</span>
+							<span
+								id="lblConfigM"
+								class="font-black text-purple-600 bg-white px-2 py-0.5 rounded-full border border-purple-200"
+								>4</span
+							>
+						</p>
+						<p class="flex items-center justify-between">
+							<span>K-Way:</span>
+							<span
+								id="lblConfigK"
+								class="font-black text-purple-600 bg-white px-2 py-0.5 rounded-full border border-purple-200"
+								>2</span
+							>
+						</p>
+					</div>
+					<div class="mt-3 flex flex-wrap gap-2">
+						<span
+							class="px-3 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 border border-blue-300 text-blue-700 rounded-lg text-xs font-bold shadow-sm"
+							>⏱ Time: O(N log N)</span
+						>
+						<span
+							class="px-3 py-1.5 bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-300 text-emerald-700 rounded-lg text-xs font-bold shadow-sm"
+							>💾 Space: O(M)</span
+						>
+					</div>
+				</div>
+			</aside>
+
+			<!-- MAIN CONTENT -->
+			<main
+				class="flex-1 flex flex-col min-w-0 bg-gradient-to-br from-slate-50 to-blue-50"
+			>
+				<!-- Status Bar -->
+				<div
+					class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm"
+				>
+					<div class="flex items-center gap-3">
+						<div
+							class="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full"
+						>
+							<span
+								class="size-2 rounded-full bg-emerald-500 animate-pulse"
+							></span>
+							<span
+								id="vizStatusText"
+								class="text-sm font-medium text-emerald-700"
+								>Đang chạy...</span
+							>>
+						</div>
+					</div>
+					<div class="flex items-center gap-4">
+						<div class="text-sm">
+							<span class="text-slate-500">Input:</span>
+							<span id="inputRemaining" class="font-bold text-primary">0</span>
+							<span class="text-slate-400">phần tử</span>
+						</div>
+						<!-- Complexity Badge -->
+						<div
+							class="hidden md:flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1.5 rounded-full text-xs font-bold"
+						>
+							<span class="material-symbols-outlined text-sm">speed</span>
+							O(N log N)
+						</div>
+					</div>
+				</div>
+
+				<!-- Visualization Area -->
+				<div class="flex-1 overflow-y-auto p-6">
+					<div class="max-w-6xl mx-auto space-y-6">
+						<!-- Current Step Description - Enhanced -->
+						<div
+							class="bg-white border-2 border-primary/20 rounded-2xl p-5 shadow-lg shadow-primary/5"
+						>
+							<div class="flex items-start gap-4">
+								<div
+									class="p-3 bg-gradient-to-br from-primary to-purple-500 text-white rounded-xl shadow-lg"
+								>
+									<span class="material-symbols-outlined text-2xl">school</span>
+								</div>
+								<div class="flex-1">
+									<div class="flex items-center gap-2 mb-1">
+										<h3
+											id="eduStepTitle"
+											class="text-sm font-bold uppercase tracking-wider text-primary"
+										>
+											HƯỚNG DẪN
+										</h3>
+										<span
+											class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded"
+											>LIVE</span
+										>
+									</div>
+									<p
+										id="eduStepDesc"
+										class="text-lg font-semibold text-slate-800 mt-1"
+									>
+										Hệ thống đang khởi tạo...
+									</p>
+									<div
+										id="eduActionDetails"
+										class="mt-3 flex flex-wrap gap-2"
+									></div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Inspector Panel - Enhanced with light theme -->
+						<div
+							class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-4 h-72 flex flex-col shadow-xl"
+						>
+							<div class="flex items-center justify-between mb-2 shrink-0">
+								<div class="flex items-center gap-2">
+									<span class="material-symbols-outlined text-yellow-400"
+										>visibility</span
+									>
+									<h3 class="text-sm font-bold uppercase text-yellow-400">
+										Inspector
+									</h3>
+								</div>
+								<span class="text-[10px] text-slate-500 font-mono"
+									>Chi tiết thao tác</span
+								>
+							</div>
+							<div
+								id="inspectorContent"
+								class="bg-black/40 rounded-xl p-3 font-mono text-sm text-slate-300 flex-1 overflow-y-auto custom-scrollbar border border-slate-700/50"
+							>
+								<span class="text-slate-500">Chưa có thao tác nào</span>
+							</div>
+						</div>
+
+						<!-- PHASE 1: RUN GENERATION - Enhanced -->
+						<section id="viz-phase-1" class="space-y-4">
+							<div
+								class="bg-white border-2 border-blue-100 rounded-2xl shadow-xl overflow-hidden"
+							>
+								<div
+									class="p-4 border-b border-blue-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50"
+								>
+									<h2 class="font-bold text-blue-800 flex items-center gap-2">
+										<span class="material-symbols-outlined text-blue-600"
+											>data_array</span
+										>
+										Phase 1: Tạo Run (Run Generation)
+									</h2>
+									<span
+										id="runsCount"
+										class="text-xs bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded-lg font-bold"
+										>0 runs</span
+									>
+								</div>
+
+								<div class="p-6 flex flex-col lg:flex-row gap-6">
+									<!-- Input Stream -->
+									<div class="flex flex-col gap-2 w-full lg:w-[20%]">
+										<div class="flex items-center justify-between">
+											<h4
+												class="text-xs font-bold uppercase text-blue-600 flex items-center gap-1"
+											>
+												<span class="material-symbols-outlined text-sm"
+													>storage</span
+												>
+												Input File
+											</h4>
+											<span
+												class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-bold"
+												>DISK</span
+											>
+										</div>
+										<div
+											id="viz-input-stream"
+											class="h-64 bg-gradient-to-b from-blue-50 to-slate-50 border-2 border-blue-200 rounded-xl p-2 overflow-y-auto custom-scrollbar flex flex-col gap-1 shadow-inner"
+										></div>
+									</div>
+
+									<!-- Arrow -->
+									<div
+										class="hidden lg:flex flex-col items-center justify-center gap-1"
+									>
+										<div class="bg-blue-100 rounded-full px-3 py-1">
+											<span class="text-[10px] text-blue-600 font-bold"
+												>ĐỌC M</span
+											>
+										</div>
+										<span
+											class="material-symbols-outlined text-blue-500 text-3xl animate-pulse"
+											>arrow_forward</span
+										>
+									</div>
+
+									<!-- RAM Buffer -->
+									<div class="flex flex-col gap-2 w-full lg:w-[40%]">
+										<div class="flex items-center justify-between">
+											<h4
+												class="text-xs font-bold uppercase text-primary flex items-center gap-1"
+											>
+												<span class="material-symbols-outlined text-sm"
+													>memory</span
+												>
+												RAM Buffer (M phần tử)
+											</h4>
+											<span
+												id="ramStatus"
+												class="text-xs bg-primary text-white px-2.5 py-1 rounded-full font-bold"
+												>READY</span
+											>
+										</div>
+										<!-- RAM Buffer Chart Container -->
+										<div class="relative">
+											<div
+												id="viz-ram-buffer"
+												class="h-80 bg-white border-2 border-slate-200 rounded-xl p-4 pt-8 shadow-inner"
+											></div>
+											<!-- Chart Info Bar -->
+											<div
+												class="flex items-center justify-between mt-2 px-2 text-xs text-slate-500"
+											>
+												<span id="ramChartInfo">RAM Buffer Chart</span>
+												<span id="ramMaxValue">Max value: -</span>
+											</div>
+										</div>
+										<!-- Current Comparison -->
+										<div
+											id="currentCompareBox"
+											class="hidden bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-xl p-4 shadow-lg"
+										>
+											<p
+												class="text-sm text-yellow-700 font-bold flex items-center gap-1"
+											>
+												<span class="material-symbols-outlined text-base"
+													>compare_arrows</span
+												>
+												ĐANG SO SÁNH:
+											</p>
+											<p
+												id="compareDetail"
+												class="text-sm font-mono text-slate-800 mt-1"
+											></p>
+										</div>
+									</div>
+
+									<!-- Arrow -->
+									<div
+										class="hidden lg:flex flex-col items-center justify-center"
+									>
+										<span class="text-[10px] text-slate-400 font-bold"
+											>GHI</span
+										>
+										<span
+											class="material-symbols-outlined text-emerald-500 text-3xl animate-pulse"
+											>arrow_forward</span
+										>
+									</div>
+
+									<!-- Output Runs -->
+									<div class="flex flex-col gap-2 w-full lg:w-[30%]">
+										<div class="flex items-center justify-between">
+											<h4
+												class="text-xs font-bold uppercase text-emerald-600 flex items-center gap-1"
+											>
+												<span class="material-symbols-outlined text-sm"
+													>folder</span
+												>
+												Output Runs (Đĩa)
+											</h4>
+											<span
+												class="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full font-bold"
+												>DISK</span
+											>
+										</div>
+										<div
+											id="viz-disk-runs"
+											class="h-80 bg-gradient-to-b from-emerald-50 to-slate-50 border-2 border-emerald-200 rounded-xl p-2 overflow-y-auto custom-scrollbar flex flex-col gap-2 shadow-inner"
+										></div>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<!-- PHASE 2: MERGE -->
+						<section id="viz-phase-2" class="hidden">
+							<div
+								class="bg-white border-2 border-orange-200 rounded-2xl shadow-xl overflow-hidden"
+							>
+								<div
+									class="p-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200 flex items-center justify-between"
+								>
+									<h2 class="font-bold text-slate-800 flex items-center gap-2">
+										<span
+											class="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center shadow-md"
+										>
+											<span class="material-symbols-outlined text-white text-lg"
+												>merge_type</span
+											>
+										</span>
+										Phase 2: K-Way Merge
+									</h2>
+									<span
+										id="mergeInputInfo"
+										class="text-xs bg-orange-500 text-white px-3 py-1 rounded-full font-bold shadow-md"
+										>K runs</span
+									>
+								</div>
+
+								<div
+									class="p-4 bg-gradient-to-br from-orange-50/50 to-amber-50/50 flex flex-col gap-4"
+									style="min-height: 500px"
+								>
+									<!-- ROW 1: Input Runs -->
+									<div class="w-full">
+										<div class="flex items-center justify-between mb-2">
+											<h4
+												class="text-sm font-bold uppercase text-orange-600 flex items-center gap-1"
+											>
+												<span class="material-symbols-outlined text-base"
+													>queue</span
+												>
+												📥 Input Runs (Các Run đầu vào)
+											</h4>
+											<span
+												class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold"
+												>SOURCES</span
+											>
+										</div>
+										<div
+											id="viz-merge-lanes"
+											class="bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-3 overflow-x-auto custom-scrollbar shadow-inner flex flex-row gap-3"
+										></div>
+									</div>
+
+									<!-- ROW 2: Min Heap Tree -->
+									<div class="w-full flex flex-col items-center gap-3">
+										<div class="flex items-center gap-3">
+											<span
+												class="text-sm bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-1.5 rounded-full font-bold shadow-md"
+												>⚖️ K-WAY MERGE</span
+											>
+											<div
+												id="mergeCompareExplain"
+												class="text-xs text-slate-600 bg-white/90 rounded-lg px-3 py-1.5 shadow border border-slate-200"
+											>
+												<span
+													class="material-symbols-outlined text-cyan-500 text-sm align-middle mr-1"
+													>info</span
+												>
+												So sánh phần tử đầu mỗi Run → Chọn MIN → Output
+											</div>
+										</div>
+										<div
+											class="w-full max-w-2xl bg-gradient-to-b from-slate-100 to-white rounded-2xl p-4 border-2 border-cyan-300 shadow-lg"
+										>
+											<!-- K-Way Merge Visualization Container -->
+											<div
+												id="viz-min-heap-tree"
+												class="min-h-[200px] flex flex-col items-center justify-center gap-2 relative"
+											>
+												<span class="text-slate-400 text-sm"
+													>Đang chờ dữ liệu...</span
+												>
+											</div>
+										</div>
+									</div>
+
+									<!-- ROW 3: Output Array -->
+									<div class="w-full">
+										<div class="flex items-center justify-between mb-2">
+											<h4
+												class="text-sm font-bold uppercase text-emerald-600 flex items-center gap-1"
+											>
+												<span class="material-symbols-outlined text-base"
+													>output</span
+												>
+												📤 Output File (Kết quả đã sắp xếp)
+											</h4>
+											<span
+												id="outputCount"
+												class="text-xs bg-emerald-500 text-white px-2 py-1 rounded-full font-bold"
+												>0 phần tử</span
+											>
+										</div>
+										<div
+											id="viz-final-output"
+											class="bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-xl p-3 min-h-[80px] max-h-[150px] overflow-y-auto custom-scrollbar shadow-inner flex flex-wrap gap-1.5 content-start"
+										></div>
+									</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<!-- VIEW 3: RESULT -->
+		<div
+			id="view-result"
+			class="hidden-view w-full flex-1 flex flex-col items-center py-8 px-4 sm:px-6 lg:px-8 overflow-y-auto bg-gradient-to-br from-slate-50 to-emerald-50"
+		>
+			<div class="w-full max-w-5xl space-y-6 mt-6">
+				<!-- Hero -->
+				<div
+					class="flex flex-col items-center text-center space-y-4 py-4 animate-fade-in"
+				>
+					<div class="relative">
+						<div
+							class="absolute inset-0 bg-green-400/30 rounded-full blur-2xl animate-pulse"
+						></div>
+						<div
+							class="relative bg-white p-5 rounded-full border-4 border-emerald-200 shadow-2xl shadow-emerald-500/20"
+						>
+							<span class="material-symbols-outlined text-emerald-500 text-5xl"
+								>check_circle</span
+							>
+						</div>
+					</div>
+					<div class="space-y-1 max-w-lg">
+						<h1
+							class="text-2xl md:text-3xl font-bold tracking-tight text-slate-800"
+						>
+							🎉 Sắp xếp hoàn tất!
+						</h1>
+						<p class="text-slate-600 text-base">
+							Dữ liệu đã được sắp xếp thành công với External Sort.
+						</p>
+					</div>
+					<!-- Actions -->
+					<div
+						class="flex flex-col sm:flex-row gap-3 w-full justify-center pt-2"
+					>
+						<button
+							id="btnDownloadBin"
+							class="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl font-semibold text-base shadow-xl shadow-blue-500/30 transition-all hover:-translate-y-0.5"
+						>
+							<span class="material-symbols-outlined text-xl">download</span>
+							Tải Binary (.bin)
+						</button>
+						<button
+							id="btnDownloadTxt"
+							class="flex items-center justify-center gap-2 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white px-6 py-2.5 rounded-xl font-semibold text-base shadow-xl shadow-slate-500/20 transition-all hover:-translate-y-0.5"
+						>
+							<span class="material-symbols-outlined text-xl"
+								>text_snippet</span
+							>
+							Tải Text (.txt)
+						</button>
+						<button
+							id="btnNewSort"
+							class="flex items-center justify-center gap-2 bg-white border-2 border-slate-300 hover:border-blue-400 hover:bg-blue-50 text-slate-700 px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg"
+						>
+							<span class="material-symbols-outlined text-xl">refresh</span>
+							Làm Mới
+						</button>
+					</div>
+				</div>
+
+				<!-- Performance Metrics - 4 columns -->
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+					<!-- Tổng phần tử -->
+					<div
+						class="bg-white rounded-xl p-4 border-2 border-purple-200 shadow-lg flex flex-col gap-2"
+					>
+						<div class="flex items-center gap-2 text-purple-600">
+							<span
+								class="w-8 h-8 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-lg flex items-center justify-center"
+							>
+								<span class="material-symbols-outlined text-white text-lg"
+									>database</span
+								>
+							</span>
+							<p class="text-xs font-bold uppercase tracking-wider">
+								Tổng phần tử
+							</p>
+						</div>
+						<p
+							id="resTotalElements"
+							class="text-2xl font-bold tracking-tight text-slate-800 font-mono"
+						>
+							0
+						</p>
+					</div>
+					<!-- Số Run -->
+					<div
+						class="bg-white rounded-xl p-4 border-2 border-orange-200 shadow-lg flex flex-col gap-2"
+					>
+						<div class="flex items-center gap-2 text-orange-600">
+							<span
+								class="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center"
+							>
+								<span class="material-symbols-outlined text-white text-lg"
+									>folder_copy</span
+								>
+							</span>
+							<p class="text-xs font-bold uppercase tracking-wider">Số Run</p>
+						</div>
+						<p
+							id="resTotalRuns"
+							class="text-2xl font-bold tracking-tight text-slate-800 font-mono"
+						>
+							0
+						</p>
+					</div>
+					<!-- Tổng số bước -->
+					<div
+						class="bg-white rounded-xl p-4 border-2 border-blue-200 shadow-lg flex flex-col gap-2"
+					>
+						<div class="flex items-center gap-2 text-blue-600">
+							<span
+								class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center"
+							>
+								<span class="material-symbols-outlined text-white text-lg"
+									>timer</span
+								>
+							</span>
+							<p class="text-xs font-bold uppercase tracking-wider">Số bước</p>
+						</div>
+						<p
+							id="resTotalSteps"
+							class="text-2xl font-bold tracking-tight text-slate-800 font-mono"
+						>
+							0
+						</p>
+					</div>
+					<!-- Số lần so sánh -->
+					<div
+						class="bg-white rounded-xl p-4 border-2 border-emerald-200 shadow-lg flex flex-col gap-2"
+					>
+						<div class="flex items-center gap-2 text-emerald-600">
+							<span
+								class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-500 rounded-lg flex items-center justify-center"
+							>
+								<span class="material-symbols-outlined text-white text-lg"
+									>compare_arrows</span
+								>
+							</span>
+							<p class="text-xs font-bold uppercase tracking-wider">So sánh</p>
+						</div>
+						<p
+							id="resTotalCompares"
+							class="text-2xl font-bold tracking-tight text-slate-800 font-mono"
+						>
+							0
+						</p>
+					</div>
+				</div>
+
+				<!-- Algorithm Info -->
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+					<!-- RAM (M) -->
+					<div
+						class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-4 border border-cyan-200 shadow flex items-center gap-3"
+					>
+						<span
+							class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center"
+						>
+							<span class="material-symbols-outlined text-white">memory</span>
+						</span>
+						<div>
+							<p class="text-xs text-cyan-600 font-bold uppercase">
+								RAM Buffer (M)
+							</p>
+							<p
+								id="resMemoryLimit"
+								class="text-xl font-bold text-slate-800 font-mono"
+							>
+								0 phần tử
+							</p>
+						</div>
+					</div>
+					<!-- K-Way -->
+					<div
+						class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200 shadow flex items-center gap-3"
+					>
+						<span
+							class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center"
+						>
+							<span class="material-symbols-outlined text-white">merge</span>
+						</span>
+						<div>
+							<p class="text-xs text-amber-600 font-bold uppercase">
+								K-Way Merge (K)
+							</p>
+							<p
+								id="resKWay"
+								class="text-xl font-bold text-slate-800 font-mono"
+							>
+								0-way
+							</p>
+						</div>
+					</div>
+					<!-- I/O -->
+					<div
+						class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl p-4 border border-rose-200 shadow flex items-center gap-3"
+					>
+						<span
+							class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center"
+						>
+							<span class="material-symbols-outlined text-white"
+								>swap_vert</span
+							>
+						</span>
+						<div>
+							<p class="text-xs text-rose-600 font-bold uppercase">
+								I/O Operations
+							</p>
+							<p
+								id="resIOCount"
+								class="text-xl font-bold text-slate-800 font-mono"
+							>
+								0 lần
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Array Preview -->
+				<div class="flex flex-col gap-3">
+					<div class="flex items-center justify-between">
+						<h3
+							class="text-base font-bold flex items-center gap-2 text-slate-700"
+						>
+							<span class="material-symbols-outlined text-emerald-500"
+								>view_array</span
+							>
+							Xem trước kết quả (dạng mảng)
+						</h3>
+						<span
+							id="resPreviewCount"
+							class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-bold"
+						>
+							0 phần tử
+						</span>
+					</div>
+
+					<!-- Array visualization -->
+					<div
+						class="bg-white border-2 border-emerald-200 rounded-xl p-4 shadow-lg"
+					>
+						<div
+							id="resultArrayPreview"
+							class="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto custom-scrollbar content-start"
+						>
+							<!-- Array items injected here -->
+						</div>
+					</div>
+
+					<!-- Min/Max info -->
+					<div class="grid grid-cols-2 gap-3">
+						<div
+							class="bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl p-3 text-white flex items-center justify-between"
+						>
+							<div class="flex items-center gap-2">
+								<span class="material-symbols-outlined">arrow_downward</span>
+								<span class="font-bold text-sm">MIN</span>
+							</div>
+							<span id="resMinValue" class="text-xl font-bold font-mono"
+								>0</span
+							>
+						</div>
+						<div
+							class="bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl p-3 text-white flex items-center justify-between"
+						>
+							<div class="flex items-center gap-2">
+								<span class="material-symbols-outlined">arrow_upward</span>
+								<span class="font-bold text-sm">MAX</span>
+							</div>
+							<span id="resMaxValue" class="text-xl font-bold font-mono"
+								>0</span
+							>
+						</div>
+					</div>
+				</div>
+
+				<!-- Table Preview (collapsed by default) -->
+				<details class="group">
+					<summary
+						class="flex items-center gap-2 cursor-pointer text-base font-bold text-slate-600 hover:text-slate-800 transition-colors"
+					>
+						<span
+							class="material-symbols-outlined text-slate-400 group-open:rotate-90 transition-transform"
+							>chevron_right</span
+						>
+						<span class="material-symbols-outlined text-slate-400"
+							>table_view</span
+						>
+						Xem dạng bảng (Top 100)
+					</summary>
+					<div
+						class="mt-3 bg-white border-2 border-slate-200 rounded-xl overflow-hidden shadow-lg"
+					>
+						<div class="overflow-x-auto max-h-64 custom-scrollbar">
+							<table class="w-full text-left border-collapse">
+								<thead
+									class="sticky top-0 bg-gradient-to-r from-slate-100 to-slate-50 border-b-2 border-slate-200"
+								>
+									<tr>
+										<th
+											class="px-4 py-2 text-xs font-bold text-slate-600 uppercase tracking-wider w-20"
+										>
+											Index
+										</th>
+										<th
+											class="px-4 py-2 text-xs font-bold text-slate-600 uppercase tracking-wider"
+										>
+											Giá trị
+										</th>
+									</tr>
+								</thead>
+								<tbody
+									id="resultTableBody"
+									class="divide-y divide-slate-100 font-mono text-sm"
+								>
+									<!-- Data injected here -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</details>
+			</div>
+		</div>
+
+		<!-- Scripts -->
+		<script src="js/fileHandler.js"></script>
+		<script src="js/educationGuide.js"></script>
+		<script src="js/externalSort.js"></script>
+		<!-- New modules -->
+		<script src="js/viewManager.js"></script>
+		<script src="js/visualizer.js"></script>
+		<script src="js/app.js"></script>
+	</body>
+</html>

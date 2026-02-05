@@ -1,0 +1,73 @@
+# ======================
+# Dependencies
+# ======================
+node_modules/
+package-lock.json
+
+# ======================
+# Python Virtual Environment
+# ======================
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.pytest_cache/
+
+# ======================
+# Test Results (Playwright/Jest)
+# ======================
+test-results/
+playwright-report/
+html-report/
+.last-run.json
+
+# ======================
+# IDE & Editor
+# ======================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-*
+
+# ======================
+# OS Generated Files
+# ======================
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ======================
+# Logs
+# ======================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# Build & Output
+# ======================
+dist/
+build/
+*.bin
+
+# ======================
+# Temporary & Cache
+# ======================
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# ======================
+# Generated Data Files
+# ======================
+*.dat
+test_data/
+output/

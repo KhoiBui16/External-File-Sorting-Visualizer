@@ -1,0 +1,818 @@
+/* ============================================
+   External Sorting Visualization - Styles
+   Premium Dark Theme with Glassmorphism
+   ============================================ */
+
+/* CSS Variables */
+:root {
+    /* Colors - Dark Theme */
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-tertiary: #1a1a25;
+
+    /* Glass Effect */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+    /* Accent Colors */
+    --accent-primary: #6366f1;
+    --accent-secondary: #8b5cf6;
+    --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+
+    /* Status Colors */
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Text Colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* Data Block Colors */
+    --block-original: #3b82f6;
+    --block-run-1: #22c55e;
+    --block-run-2: #f59e0b;
+    --block-run-3: #ec4899;
+    --block-run-4: #8b5cf6;
+    --block-sorted: #6366f1;
+    --block-highlight: #fbbf24;
+    --block-comparing: #ef4444;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+
+    /* Layout */
+    --sidebar-width: 340px;
+    --header-height: 70px;
+}
+
+/* Reset & Base */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    height: 100%;
+    overflow: hidden;
+    /* Prevent body scroll, use inner scroll */
+}
+
+/* Background Animation */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ============================================
+   Layout: App Wrapper (Grid)
+   ============================================ */
+.app-wrapper {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   Sidebar
+   ============================================ */
+.sidebar {
+    background: rgba(18, 18, 26, 0.8);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    gap: var(--spacing-lg);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-small {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.logo-icon {
+    -webkit-text-fill-color: initial;
+}
+
+.panel-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+}
+
+.separator {
+    height: 1px;
+    background: var(--glass-border);
+    margin: 0 (-1.5rem);
+    /* Full width separator */
+}
+
+/* ============================================
+   Education Panel
+   ============================================ */
+.edu-card {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.edu-icon {
+    font-size: 1.5rem;
+}
+
+.edu-content h4 {
+    font-size: 0.95rem;
+    color: var(--accent-primary);
+    margin-bottom: 4px;
+}
+
+.edu-content p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Architecture Mini Map */
+.architecture-minimap {
+    background: rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.mini-title {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.arch-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.arch-node {
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    width: 100%;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.arch-node.active {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: var(--success);
+    color: var(--success);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+}
+
+.arch-arrow {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+/* ============================================
+   Main Content
+   ============================================ */
+.main-content {
+    overflow-y: auto;
+    height: 100vh;
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
+    scroll-behavior: smooth;
+    position: relative;
+    background: radial-gradient(circle at 50% 50%, #0d0d14 0%, #0a0a0f 100%);
+}
+
+/* Sticky Header */
+.top-header {
+    position: sticky;
+    top: var(--spacing-md);
+    z-index: 100;
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.top-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-full);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
+}
+
+/* ============================================
+   Control Panel Sidebar (Mini)
+   ============================================ */
+.file-upload-mini {
+    border: 1px dashed var(--glass-border);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.btn-mini {
+    background: var(--accent-gradient);
+    color: white;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.file-status-container {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.file-status {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: block;
+    word-break: break-all;
+}
+
+.file-details-mini {
+    font-size: 0.75rem;
+    color: var(--success);
+}
+
+/* Tabs */
+.tabs-container {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    padding: 3px;
+    margin-bottom: var(--spacing-md);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 6px;
+    font-size: 0.85rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Mini Inputs */
+.input-mini,
+.input-tiny {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    color: white;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+}
+
+.input-mini {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.input-tiny {
+    width: 60px;
+}
+
+.gen-mini-form {
+    background: rgba(255, 255, 255, 0.02);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.btn-mini-action {
+    width: 100%;
+    padding: 6px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-primary);
+    color: var(--accent-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-mini-action:hover {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.virtual-files-list-mini {
+    max-height: 120px;
+    overflow-y: auto;
+    margin-top: 8px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+}
+
+.virtual-file-item {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.virtual-file-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.virtual-file-item.selected {
+    background: rgba(34, 197, 94, 0.1);
+    border-left: 2px solid var(--success);
+}
+
+/* Params Mini */
+.params-mini {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.param-row {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Speed Slider Mini */
+.speed-control-mini label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.slider-mini {
+    width: 100%;
+    height: 4px;
+    accent-color: var(--accent-primary);
+}
+
+/* Action Buttons Mini */
+.action-buttons-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn-group-row {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-group-row button {
+    flex: 1;
+    font-size: 0.8rem;
+    padding: 6px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ============================================
+   Visualization Area (Same as before but cleaned)
+   ============================================ */
+.section-title {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.glass-card {
+    background: rgba(30, 30, 40, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Reusing visualization blocks styles */
+.data-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.data-title {
+    margin-bottom: var(--spacing-sm);
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.badge-original {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--block-original);
+}
+
+.badge-runs {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--success);
+}
+
+.badge-merge {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+}
+
+.badge-sorted {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--accent-primary);
+}
+
+.data-container,
+.runs-container,
+.merge-container {
+    min-height: 60px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+}
+
+/* Scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Visualization Blocks (Critical) */
+.data-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.data-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 36px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    /* Fallback */
+}
+
+/* Specific Block Colors */
+.data-block.original {
+    border: 1px solid var(--block-original);
+    color: var(--block-original);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.data-block.sorted {
+    border: 1px solid var(--block-sorted);
+    color: var(--block-sorted);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.data-block.highlight {
+    background: var(--block-highlight) !important;
+    color: black !important;
+    transform: scale(1.1);
+}
+
+.data-block.comparing {
+    border: 1px solid var(--danger) !important;
+    color: var(--danger) !important;
+}
+
+/* Run Group */
+.run-group {
+    margin-bottom: 8px;
+    padding: 6px;
+    border-left: 2px solid var(--accent-primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.run-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Merge Pass */
+.merge-pass {
+    padding: 10px;
+    border: 1px dashed var(--warning);
+    background: rgba(245, 158, 11, 0.05);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+}
+
+.merge-pass-label {
+    color: var(--warning);
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.merge-step {
+    margin-top: 5px;
+}
+
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
+.mt-md {
+    margin-top: var(--spacing-md);
+}
+
+/* ============================================
+   Enhanced Animations for Visualization
+   ============================================ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse-ring {
+    0% {
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+    }
+}
+
+@keyframes bounce-in {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-in {
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-pulse-ring {
+    animation: pulse-ring 1s infinite;
+}
+
+.animate-bounce-in {
+    animation: bounce-in 0.4s ease-out forwards;
+}
+
+.animate-glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   Inspector Panel Styles
+   ============================================ */
+#inspectorContent {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#inspectorContent::-webkit-scrollbar {
+    width: 4px;
+}
+
+#inspectorContent::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+/* ============================================
+   Statistics Cards Hover Effects
+   ============================================ */
+#statCompares,
+#statReads,
+#statWrites,
+#statRuns {
+    transition: transform 0.2s ease, text-shadow 0.2s ease;
+}
+
+#statCompares:not(:empty),
+#statReads:not(:empty),
+#statWrites:not(:empty),
+#statRuns:not(:empty) {
+    text-shadow: 0 0 10px currentColor;
+}
+
+/* ============================================
+   RAM Buffer Bar Enhancements
+   ============================================ */
+#viz-ram-buffer>div {
+    transition: all 0.3s ease;
+}
+
+#viz-ram-buffer>div:hover {
+    transform: scaleY(1.05);
+}
+
+/* ============================================
+   Merge Lane Highlighting
+   ============================================ */
+[id^="lane-"].ring-2 {
+    background-color: rgba(6, 182, 212, 0.1) !important;
+}
+
+/* ============================================
+   Min Heap Node Styles
+   ============================================ */
+#viz-min-heap>div {
+    transition: all 0.3s ease;
+}
+
+#viz-min-heap>div:first-child {
+    transform: scale(1.1);
+}
+
+/* ============================================
+   Output Items Stack Effect
+   ============================================ */
+#viz-final-output>div:nth-child(1) {
+    opacity: 1;
+}
+
+#viz-final-output>div:nth-child(2) {
+    opacity: 0.9;
+}
+
+#viz-final-output>div:nth-child(3) {
+    opacity: 0.8;
+}
+
+#viz-final-output>div:nth-child(n+4) {
+    opacity: 0.7;
+}
