@@ -6,9 +6,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 | 📚 Môn học | CS523 - Cấu trúc dữ liệu và Giải thuật nâng cao |
-|------------|-----------------------------------------------|
+| ---------- | ----------------------------------------------- |
 | 🏫 Trường  | Đại học Công nghệ Thông tin - ĐHQG TP.HCM (UIT) |
-| 👨‍💻 Tác giả | Bùi Nhật Anh Khôi - 23520761 |
+| 👨‍💻 Tác giả | Bùi Nhật Anh Khôi - 23520761                    |
 
 ---
 
@@ -31,14 +31,14 @@
 
 ## 🎯 Tính Năng
 
-| Tính năng | Mô tả |
-|-----------|-------|
-| 🖥️ **3 bước rõ ràng** | Cấu hình → Minh họa → Kết quả |
-| 📊 **Animation realtime** | Xem từng bước: đọc, sắp xếp, ghi, merge |
+| Tính năng                   | Mô tả                                          |
+| --------------------------- | ---------------------------------------------- |
+| 🖥️ **3 bước rõ ràng**       | Cấu hình → Minh họa → Kết quả                  |
+| 📊 **Animation realtime**   | Xem từng bước: đọc, sắp xếp, ghi, merge        |
 | 🎮 **Điều khiển linh hoạt** | Play/Pause, Step từng bước, tốc độ 10ms-2000ms |
-| 📈 **Thống kê chi tiết** | Số bước, so sánh, I/O, MIN/MAX |
-| 💾 **Lưu kết quả** | Reload trang vẫn giữ kết quả (sessionStorage) |
-| 📥 **Xuất file** | Download .bin hoặc .txt |
+| 📈 **Thống kê chi tiết**    | Số bước, so sánh, I/O, MIN/MAX                 |
+| 💾 **Lưu kết quả**          | Reload trang vẫn giữ kết quả (sessionStorage)  |
+| 📥 **Xuất file**            | Download .bin hoặc .txt                        |
 
 ---
 
@@ -113,10 +113,10 @@ python -m http.server 8000
 
 ### Bước 2: Cấu hình tham số
 
-| Tham số | Ý nghĩa | Phạm vi | Gợi ý |
-|---------|---------|---------|-------|
-| **M (RAM)** | Số phần tử tối đa trong RAM | 2 - 20 | 4-6 để dễ quan sát |
-| **K (K-Way)** | Số Run merge đồng thời | 2 - 10 | 2-3 cho demo |
+| Tham số       | Ý nghĩa                     | Phạm vi | Gợi ý              |
+| ------------- | --------------------------- | ------- | ------------------ |
+| **M (RAM)**   | Số phần tử tối đa trong RAM | 2 - 20  | 4-6 để dễ quan sát |
+| **K (K-Way)** | Số Run merge đồng thời      | 2 - 10  | 2-3 cho demo       |
 
 ### Bước 3: Chạy mô phỏng
 
@@ -144,7 +144,7 @@ Input: [8, 3, 7, 1, 5, 9, 2, 6, 4]  (9 phần tử)
 RAM Limit (M) = 3
 
 [8, 3, 7] → Insertion Sort → Run 1: [3, 7, 8]
-[1, 5, 9] → Insertion Sort → Run 2: [1, 5, 9]  
+[1, 5, 9] → Insertion Sort → Run 2: [1, 5, 9]
 [2, 6, 4] → Insertion Sort → Run 3: [2, 4, 6]
 ```
 
@@ -161,12 +161,12 @@ Kết quả: [1, 2, 3, 4, 5, 6, 7, 8, 9] ✅
 
 ### Độ Phức Tạp
 
-| Metric | Độ phức tạp | Giải thích |
-|--------|-------------|------------|
-| Thời gian | O(N log N) | N = tổng số phần tử |
-| Không gian | O(M) | Chỉ cần M phần tử trong RAM |
-| Số Run | ⌈N/M⌉ | N phần tử, mỗi Run chứa M |
-| Số Pass | ⌈logₖ(Runs)⌉ | Merge K Run mỗi lần |
+| Metric     | Độ phức tạp  | Giải thích                  |
+| ---------- | ------------ | --------------------------- |
+| Thời gian  | O(N log N)   | N = tổng số phần tử         |
+| Không gian | O(M)         | Chỉ cần M phần tử trong RAM |
+| Số Run     | ⌈N/M⌉        | N phần tử, mỗi Run chứa M   |
+| Số Pass    | ⌈logₖ(Runs)⌉ | Merge K Run mỗi lần         |
 
 ---
 
