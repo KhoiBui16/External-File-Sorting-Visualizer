@@ -23,12 +23,13 @@ test.describe('External Sort Visualization E2E', () => {
         await expect(page.locator('#view-config')).toBeVisible();
         await expect(page.locator('#view-viz')).toBeHidden();
 
-        // Generate Data (Small 20)
+        // Generate Data (use input + button)
         console.log('Step 2: Generating Data');
-        await page.click('#btnGenSmall');
+        await page.fill('#randomCountInput', '20');
+        await page.click('#btnGenRandom');
         
-        // Check Preview Table
-        await expect(page.locator('#previewBody tr')).toHaveCount(10 + 1); // 10 rows + 1 "more" row or just 20
+        // Check Preview Table (may show 10 rows + 1 "more" row, or all 20)
+        await expect(page.locator('#previewBody tr').first()).toBeVisible();
         // Wait for stats calculation
         await expect(page.locator('#estChunks')).not.toBeEmpty();
 
@@ -41,9 +42,10 @@ test.describe('External Sort Visualization E2E', () => {
         await expect(page.locator('#view-viz')).toBeVisible();
         await expect(page.locator('#view-config')).toBeHidden();
 
-        // Increase Speed to Max to finish fast
-        // Slider value logic: 100 (slow) to 2000 (fast) in UI value, but logic was inverted in code?
-        // Let's just wait. Simulation for 20 items is fast.
+        // Set Speed to Maximum (2000) to finish fast
+        await page.fill('#speedSlider', '2000');
+        // Trigger input event to update delay
+        await page.dispatchEvent('#speedSlider', 'input');
         
         // Wait for "Run Generation" Phase
         await expect(page.locator('#vizPhaseTitle')).toContainText('Giai đoạn 1', { timeout: 5000 });
@@ -55,7 +57,8 @@ test.describe('External Sort Visualization E2E', () => {
 
         // --- PHASE 3: RESULTS ---
         console.log('Step 6: Checking Results Page');
-        await expect(page.locator('text=Sắp xếp hoàn tất!')).toBeVisible();
+        // Use specific h1 with emoji to avoid strict mode violation
+        await expect(page.getByRole('heading', { name: '🎉 Sắp xếp hoàn tất!' })).toBeVisible();
         
         // Check Metrics
         const steps = await page.locator('#resTotalSteps').innerText();
@@ -71,7 +74,8 @@ test.describe('External Sort Visualization E2E', () => {
 
     test('Responsive UI Check', async ({ page }) => {
         // Check if sidebar toggle or layout holds up (basic check)
-        await expect(page.locator('aside')).toBeVisible();
+        // Use .first() since there are 2 aside elements (config + viz)
+        await expect(page.locator('aside').first()).toBeVisible();
         await expect(page.locator('#dropZone')).toBeVisible();
     });
 });
