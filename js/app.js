@@ -63,8 +63,6 @@ class App {
         
         // Các nút bấm
         this.btnStart = document.getElementById('btnStartSimulation');
-        this.btnGenSmall = document.getElementById('btnGenSmall');
-        this.btnGenLarge = document.getElementById('btnGenLarge');
         this.btnBackToConfig = document.getElementById('btnBackToConfig');
         this.btnReset = document.getElementById('btnReset');
         this.btnStep = document.getElementById('btnStep');
@@ -163,16 +161,25 @@ class App {
         }
 
         // ====== TẠO DỮ LIỆU NGẪU NHIÊN ======
-        if (this.btnGenSmall) {
-            this.btnGenSmall.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                this.generateData(20); 
+        const btnGenRandom = document.getElementById('btnGenRandom');
+        const randomCountInput = document.getElementById('randomCountInput');
+        
+        if (btnGenRandom && randomCountInput) {
+            btnGenRandom.addEventListener('click', (e) => { 
+                e.stopPropagation();
+                let count = parseInt(randomCountInput.value) || 20;
+                // Giới hạn từ 5 đến 1000
+                count = Math.max(5, Math.min(1000, count));
+                randomCountInput.value = count;
+                this.generateData(count); 
             });
-        }
-        if (this.btnGenLarge) {
-            this.btnGenLarge.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                this.generateData(100); 
+            
+            // Cho phép Enter để tạo
+            randomCountInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnGenRandom.click();
+                }
             });
         }
         

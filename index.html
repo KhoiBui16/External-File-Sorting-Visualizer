@@ -501,18 +501,21 @@
 							<input class="hidden" id="fileInput" type="file" accept=".bin" />
 						</div>
 						<!-- Generator Quick Actions -->
-						<div class="grid grid-cols-2 gap-2 mt-2">
+						<div class="flex gap-2 mt-2">
+							<input
+								id="randomCountInput"
+								type="number"
+								min="5"
+								max="1000"
+								value="20"
+								placeholder="Số lượng"
+								class="w-24 px-3 py-2.5 text-sm font-bold bg-white border border-slate-300 rounded-xl text-slate-700 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500"
+							/>
 							<button
-								id="btnGenSmall"
-								class="px-3 py-2.5 text-xs font-bold bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 border border-slate-300 rounded-xl text-slate-700 transition-all shadow-sm"
+								id="btnGenRandom"
+								class="flex-1 px-3 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border border-emerald-400 rounded-xl text-white transition-all shadow-sm flex items-center justify-center gap-1"
 							>
-								🎲 Tạo Random (20)
-							</button>
-							<button
-								id="btnGenLarge"
-								class="px-3 py-2.5 text-xs font-bold bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 border border-slate-300 rounded-xl text-slate-700 transition-all shadow-sm"
-							>
-								🎲 Tạo Random (100)
+								<span class="text-base">🎲</span> Tạo Random
 							</button>
 						</div>
 					</div>
